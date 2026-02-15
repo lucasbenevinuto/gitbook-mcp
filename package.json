@@ -1,7 +1,7 @@
 {
   "name": "gitbook-mcp",
   "version": "1.0.0",
-  "description": "MCP Server for GitBook API - Full automation of documentation workflows",
+  "description": "MCP Server that exposes 39 tools for full GitBook API automation — manage spaces, pages, change requests, reviews, comments, Git Sync, and content imports through any MCP-compatible AI agent",
   "type": "module",
   "main": "dist/index.js",
   "scripts": {
