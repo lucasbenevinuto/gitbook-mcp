@@ -1,5 +1,5 @@
 {
-  "name": "looqbox-gitbook-mcp",
+  "name": "gitbook-mcp",
   "version": "1.0.0",
   "description": "MCP Server for GitBook API - Full automation of documentation workflows",
   "type": "module",

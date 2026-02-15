@@ -1,6 +1,6 @@
 {
   "mcpServers": {
-    "looqbox-gitbook": {
+    "gitbook": {
       "command": "node",
       "args": ["dist/index.js"],
       "env": {

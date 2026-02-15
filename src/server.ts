@@ -5,7 +5,7 @@ import { registerAllTools } from "./tools/index.js";
 
 export function createServer(config: Config): McpServer {
   const server = new McpServer({
-    name: "looqbox-gitbook",
+    name: "gitbook-mcp",
     version: "1.0.0",
   });
 

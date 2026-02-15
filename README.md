@@ -1,196 +1,196 @@
-# looqbox-gitbook-mcp
+# gitbook-mcp
 
-MCP Server para automação completa do GitBook via API. Expõe **39 tools** que permitem a agentes AI (Claude Code, Cursor, etc.) gerenciar documentação, change requests, reviews e Git Sync programaticamente.
+MCP Server for full GitBook API automation. Exposes **39 tools** that allow AI agents (Claude Code, Cursor, etc.) to manage documentation, change requests, reviews, and Git Sync programmatically.
 
 ## Quickstart
 
 ```bash
-# 1. Clonar
-git clone git@github.com:looqbox/looqbox-gitbook-mcp.git
-cd looqbox-gitbook-mcp
+# 1. Clone
+git clone <your-repo-url>
+cd gitbook-mcp
 
-# 2. Instalar e compilar
+# 2. Install and build
 npm install
 npm run build
 
-# 3. Configurar
+# 3. Configure
 cp .env.example .env
-# Edite o .env com seu token (veja seção "Configuração" abaixo)
+# Edit .env with your token (see "Configuration" below)
 
-# 4. Testar
+# 4. Run
 npm start
 ```
 
-## Configuração
+## Configuration
 
-### Variáveis de ambiente
+### Environment variables
 
-| Variável | Obrigatória | Descrição |
+| Variable | Required | Description |
 |---|---|---|
-| `GITBOOK_API_TOKEN` | Sim | Token de API do GitBook |
-| `GITBOOK_DEFAULT_ORG_ID` | Nao | ID da organização padrão |
-| `GITBOOK_DEFAULT_SPACE_ID` | Nao | ID do space padrão |
-| `GITBOOK_API_BASE_URL` | Nao | URL base da API (default: `https://api.gitbook.com/v1`) |
+| `GITBOOK_API_TOKEN` | Yes | GitBook API token |
+| `GITBOOK_DEFAULT_ORG_ID` | No | Default organization ID |
+| `GITBOOK_DEFAULT_SPACE_ID` | No | Default space ID |
+| `GITBOOK_API_BASE_URL` | No | API base URL (default: `https://api.gitbook.com/v1`) |
 
-### Obter o token
+### Get your token
 
-1. Acesse [GitBook Developer Settings](https://app.gitbook.com/account/developer)
-2. Crie um novo API Token
-3. Copie o token para o `.env`
+1. Go to [GitBook Developer Settings](https://app.gitbook.com/account/developer)
+2. Create a new API Token
+3. Copy the token to your `.env`
 
-### `.env` de exemplo
+### `.env` example
 
 ```env
 GITBOOK_API_TOKEN=gb_api_xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx
 GITBOOK_DEFAULT_SPACE_ID=
-GITBOOK_DEFAULT_ORG_ID=Gwx2pZrgcM1dfV4JuNw5
+GITBOOK_DEFAULT_ORG_ID=
 ```
 
-## Integração com AI Agents
+## AI Agent Integration
 
 ### Claude Code
 
-Adicione ao `.mcp.json` na raiz do seu projeto:
+Add to `.mcp.json` in your project root:
 
 ```json
 {
   "mcpServers": {
-    "looqbox-gitbook": {
+    "gitbook": {
       "command": "node",
-      "args": ["/home/SEU_USUARIO/looqbox-gitbook-mcp/dist/index.js"],
+      "args": ["/path/to/gitbook-mcp/dist/index.js"],
       "env": {
         "GITBOOK_API_TOKEN": "${GITBOOK_API_TOKEN}",
-        "GITBOOK_DEFAULT_ORG_ID": "Gwx2pZrgcM1dfV4JuNw5"
+        "GITBOOK_DEFAULT_ORG_ID": ""
       }
     }
   }
 }
 ```
 
-O Claude Code resolve `${GITBOOK_API_TOKEN}` a partir das variáveis de ambiente do shell. Adicione ao seu `~/.bashrc` ou `~/.zshrc`:
+Claude Code resolves `${GITBOOK_API_TOKEN}` from shell environment variables. Add to your `~/.bashrc` or `~/.zshrc`:
 
 ```bash
-export GITBOOK_API_TOKEN="seu-token-aqui"
+export GITBOOK_API_TOKEN="your-token-here"
 ```
 
 ### Cursor
 
-Adicione ao `~/.cursor/mcp.json` (global) ou `.cursor/mcp.json` (projeto):
+Add to `~/.cursor/mcp.json` (global) or `.cursor/mcp.json` (project):
 
 ```json
 {
   "mcpServers": {
-    "looqbox-gitbook": {
+    "gitbook": {
       "command": "node",
-      "args": ["/home/SEU_USUARIO/looqbox-gitbook-mcp/dist/index.js"],
+      "args": ["/path/to/gitbook-mcp/dist/index.js"],
       "env": {
-        "GITBOOK_API_TOKEN": "seu-token-aqui",
-        "GITBOOK_DEFAULT_ORG_ID": "Gwx2pZrgcM1dfV4JuNw5"
+        "GITBOOK_API_TOKEN": "your-token-here",
+        "GITBOOK_DEFAULT_ORG_ID": ""
       }
     }
   }
 }
 ```
 
-> No Cursor, `${VAR}` nao funciona. Coloque o token diretamente no JSON.
+> In Cursor, `${VAR}` interpolation is not supported. Place the token directly in the JSON.
 
-### Outros clientes MCP
+### Other MCP clients
 
-Qualquer cliente compativel com MCP via **stdio transport** funciona. O servidor le stdin/stdout seguindo o protocolo MCP.
+Any client compatible with MCP via **stdio transport** will work. The server reads stdin/stdout following the MCP protocol.
 
 ## Tools
 
 ### Spaces (6)
 
-| Tool | Descricao |
+| Tool | Description |
 |---|---|
-| `get_space` | Detalhes de um space |
-| `update_space` | Atualizar titulo, visibilidade |
-| `create_space` | Criar novo space em uma org |
-| `duplicate_space` | Duplicar um space existente |
-| `list_spaces` | Listar spaces de uma org |
-| `search_space_content` | Buscar conteudo dentro de um space |
+| `get_space` | Get space details |
+| `update_space` | Update title, visibility |
+| `create_space` | Create new space in an org |
+| `duplicate_space` | Duplicate an existing space |
+| `list_spaces` | List spaces in an org |
+| `search_space_content` | Search content within a space |
 
 ### Pages (8)
 
-| Tool | Descricao |
+| Tool | Description |
 |---|---|
-| `get_space_revision` | Arvore completa de paginas de um space |
-| `list_pages` | Listar paginas (com paginacao) |
-| `get_page_by_id` | Ler pagina por ID |
-| `get_page_by_path` | Ler pagina por URL path (ex: `getting-started/install`) |
-| `get_page_links` | Links de saida de uma pagina |
-| `get_page_backlinks` | Paginas que linkam para uma pagina (backlinks) |
-| `list_files` | Listar arquivos (imagens, anexos) |
-| `get_file` | Detalhes e URL de download de um arquivo |
+| `get_space_revision` | Full page tree of a space |
+| `list_pages` | List pages (with pagination) |
+| `get_page_by_id` | Read page by ID |
+| `get_page_by_path` | Read page by URL path (e.g., `getting-started/install`) |
+| `get_page_links` | Outgoing links from a page |
+| `get_page_backlinks` | Pages linking to a page (backlinks) |
+| `list_files` | List files (images, attachments) |
+| `get_file` | File details and download URL |
 
 ### Change Requests (6)
 
-| Tool | Descricao |
+| Tool | Description |
 |---|---|
-| `create_change_request` | Criar novo CR (similar a PR/draft) |
-| `list_change_requests` | Listar CRs de um space |
-| `get_change_request` | Detalhes de um CR |
-| `update_change_request` | Atualizar titulo/status de um CR |
-| `merge_change_request` | Mergear CR no conteudo principal |
-| `sync_change_request` | Sincronizar CR com conteudo mais recente |
+| `create_change_request` | Create new CR (similar to PR/draft) |
+| `list_change_requests` | List CRs of a space |
+| `get_change_request` | CR details |
+| `update_change_request` | Update CR title/status |
+| `merge_change_request` | Merge CR into main content |
+| `sync_change_request` | Sync CR with latest content |
 
 ### Reviews (5)
 
-| Tool | Descricao |
+| Tool | Description |
 |---|---|
-| `list_reviews` | Listar reviews de um CR |
-| `submit_review` | Aprovar, solicitar mudancas ou comentar |
-| `list_requested_reviewers` | Listar reviewers solicitados |
-| `request_reviewers` | Solicitar review de usuarios especificos |
-| `remove_reviewer` | Remover reviewer de um CR |
+| `list_reviews` | List reviews of a CR |
+| `submit_review` | Approve, request changes, or comment |
+| `list_requested_reviewers` | List requested reviewers |
+| `request_reviewers` | Request review from specific users |
+| `remove_reviewer` | Remove reviewer from a CR |
 
 ### Comments (6)
 
-| Tool | Descricao |
+| Tool | Description |
 |---|---|
-| `list_comments` | Listar comentarios (space ou CR) |
-| `post_comment` | Postar comentario (suporta markdown) |
-| `update_comment` | Editar comentario existente |
-| `delete_comment` | Deletar comentario |
-| `list_comment_replies` | Listar respostas a um comentario |
-| `post_comment_reply` | Responder a um comentario |
+| `list_comments` | List comments (space or CR) |
+| `post_comment` | Post comment (supports markdown) |
+| `update_comment` | Edit existing comment |
+| `delete_comment` | Delete comment |
+| `list_comment_replies` | List replies to a comment |
+| `post_comment_reply` | Reply to a comment |
 
 ### Git Sync (3)
 
-| Tool | Descricao |
+| Tool | Description |
 |---|---|
-| `git_import` | Importar conteudo de um repo Git para um space |
-| `git_export` | Exportar conteudo de um space para um repo Git |
-| `get_git_info` | Status e configuracao do Git Sync |
+| `git_import` | Import content from a Git repo to a space |
+| `git_export` | Export content from a space to a Git repo |
+| `get_git_info` | Git Sync status and configuration |
 
 ### Organizations (4)
 
-| Tool | Descricao |
+| Tool | Description |
 |---|---|
-| `get_organization` | Detalhes da organizacao |
-| `list_collections` | Listar collections de uma org |
-| `get_collection` | Detalhes de uma collection |
-| `ask_ai` | Perguntar ao AI do GitBook sobre a documentacao |
+| `get_organization` | Organization details |
+| `list_collections` | List collections in an org |
+| `get_collection` | Collection details |
+| `ask_ai` | Ask GitBook AI about the documentation |
 
 ### Content Import (1)
 
-| Tool | Descricao |
+| Tool | Description |
 |---|---|
-| `import_content` | Importar conteudo de uma URL para a org |
+| `import_content` | Import content from a URL into the org |
 
-## Arquitetura
+## Architecture
 
 ```
 src/
 ├── index.ts                 # Entrypoint — stdio transport
-├── server.ts                # Criacao do McpServer
-├── config.ts                # Carregamento de env vars
+├── server.ts                # McpServer creation
+├── config.ts                # Environment variable loading
 ├── client/
-│   ├── gitbook-client.ts    # HTTP client para GitBook API v1
-│   └── types.ts             # Tipos das respostas da API
+│   ├── gitbook-client.ts    # HTTP client for GitBook API v1
+│   └── types.ts             # API response types
 ├── tools/
-│   ├── index.ts             # Registro de todas as 39 tools
+│   ├── index.ts             # Registration of all 39 tools
 │   ├── spaces.ts            # 6 tools
 │   ├── pages.ts             # 8 tools
 │   ├── change-requests.ts   # 6 tools
@@ -200,33 +200,33 @@ src/
 │   ├── organizations.ts     # 4 tools
 │   └── content-import.ts    # 1 tool
 ├── schemas/
-│   └── index.ts             # Schemas Zod reutilizaveis
+│   └── index.ts             # Reusable Zod schemas
 └── utils/
-    ├── errors.ts            # Tratamento de erros da API
-    └── pagination.ts        # Helpers de paginacao
+    ├── errors.ts            # API error handling
+    └── pagination.ts        # Pagination helpers
 ```
 
 ## Scripts
 
-| Comando | Descricao |
+| Command | Description |
 |---|---|
-| `npm run build` | Compila TypeScript para `dist/` |
-| `npm start` | Inicia o servidor MCP via stdio |
-| `npm run dev` | Compila em watch mode (desenvolvimento) |
-| `npm run inspect` | Abre o MCP Inspector para debug |
+| `npm run build` | Compile TypeScript to `dist/` |
+| `npm start` | Start MCP server via stdio |
+| `npm run dev` | Compile in watch mode (development) |
+| `npm run inspect` | Open MCP Inspector for debugging |
 
-## Requisitos
+## Requirements
 
 - Node.js >= 18.0.0
 - npm
 
-## Dependencias
+## Dependencies
 
-| Pacote | Versao | Uso |
+| Package | Version | Usage |
 |---|---|---|
-| `@modelcontextprotocol/sdk` | ^1.12.0 | SDK oficial do MCP |
-| `zod` | ^3.24.0 | Validacao de schemas |
-| `typescript` | ^5.7.0 | (dev) Compilacao |
+| `@modelcontextprotocol/sdk` | ^1.12.0 | Official MCP SDK |
+| `zod` | ^3.24.0 | Schema validation |
+| `typescript` | ^5.7.0 | (dev) Compilation |
 
 ## Debug
 
@@ -236,34 +236,34 @@ src/
 npm run inspect
 ```
 
-Abre uma interface web para testar as tools interativamente.
+Opens a web interface to test tools interactively.
 
-### Logs de erro
+### Error logs
 
-O servidor envia erros formatados de volta ao cliente MCP. Erros da API do GitBook incluem:
-- Status code HTTP
-- Endpoint que falhou
-- Mensagem de erro do GitBook
+The server sends formatted errors back to the MCP client. GitBook API errors include:
+- HTTP status code
+- Failed endpoint
+- GitBook error message
 
-### Problemas comuns
+### Common issues
 
-| Problema | Solucao |
+| Problem | Solution |
 |---|---|
-| `GITBOOK_API_TOKEN is required` | Defina a variavel de ambiente ou crie o `.env` |
-| `GitBook API error 401` | Token invalido ou expirado — gere um novo |
-| `GitBook API error 403` | Token sem permissao para o recurso |
-| `GitBook API error 404` | Space/page/org ID incorreto |
-| `Cannot find module dist/index.js` | Execute `npm run build` primeiro |
+| `GITBOOK_API_TOKEN is required` | Set the environment variable or create the `.env` file |
+| `GitBook API error 401` | Invalid or expired token — generate a new one |
+| `GitBook API error 403` | Token lacks permission for the resource |
+| `GitBook API error 404` | Incorrect space/page/org ID |
+| `Cannot find module dist/index.js` | Run `npm run build` first |
 
-## Atualizacao
+## Update
 
 ```bash
-cd ~/looqbox-gitbook-mcp
+cd ~/gitbook-mcp
 git pull
 npm install
 npm run build
 ```
 
-## Licenca
+## License
 
-Uso interno Looqbox.
+MIT
