@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "looqbox-gitbook": {
+      "command": "node",
+      "args": ["dist/index.js"],
+      "env": {
+        "GITBOOK_API_TOKEN": "${GITBOOK_API_TOKEN}",
+        "GITBOOK_DEFAULT_SPACE_ID": "",
+        "GITBOOK_DEFAULT_ORG_ID": ""
+      }
+    }
+  }
+}
